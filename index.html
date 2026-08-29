@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1f3a">
+  <meta name="description" content="Підтримка поруч — навчальні матеріали та практичні інструкції.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Підтримка поруч">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Підтримка поруч</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; min-height: 100%; font-family: Arial, sans-serif; }
+    body { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; background: linear-gradient(160deg, #0b1f3a, #123b63); color: #fff; }
+    .card { width: 100%; max-width: 440px; padding: 36px 24px; text-align: center; background: #fff; color: #162235; border-radius: 24px; box-shadow: 0 18px 50px rgba(0,0,0,.28); }
+    .logo { width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 24px; overflow: hidden; background: #0b1f3a; }
+    .logo img { width: 100%; height: 100%; object-fit: cover; }
+    h1 { margin: 0 0 12px; font-size: 28px; font-weight: 800; }
+    p { margin: 0 auto 26px; max-width: 340px; line-height: 1.5; color: #566274; }
+    button { width: 100%; border: none; border-radius: 14px; padding: 17px; background: #0b1f3a; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; }
+    button:active { transform: scale(.99); }
+    #install { display: none; margin-top: 10px; background: #e9eef5; color: #0b1f3a; }
+    .note { margin-top: 18px; font-size: 12px; color: #7a8594; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="logo"><img src="icon-192.png" alt="Підтримка поруч"></div>
+    <h1>Підтримка поруч</h1>
+    <p>Навчальні матеріали та практичні інструкції. Працює без інтернету після першого завантаження.</p>
+    <button id="start">ПОЧАТИ</button>
+    <button id="install">➕ ДОДАТИ НА ГОЛОВНИЙ ЕКРАН</button>
+    <div class="note">Після встановлення застосунок відкриватиметься окремим вікном.</div>
+  </main>
+  <script>
+    document.getElementById('start').addEventListener('click', function () { window.location.href = 'app.html'; });
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function (event) {
+      event.preventDefault(); deferredPrompt = event; document.getElementById('install').style.display = 'block';
+    });
+    document.getElementById('install').addEventListener('click', async function () {
+      if (!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; document.getElementById('install').style.display = 'none';
+    });
+    if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('service-worker.js').catch(console.error); });
+  </script>
+</body>
+</html>
